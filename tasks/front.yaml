@@ -79,8 +79,8 @@
       jump: ACCEPT
       comment: "managed by kubernetes ansible role"
     loop:
-      - 443
-      - 80        
+      - "443"
+      - "80"
   - name: 'iptables -t nat -A PREROUTING -p tcp -d {{ nginx_ingress.master_public_ip }} --dport 443,80 -j DNAT --to-destination {{ nginx_ingress.master_private_ip }}:443,80'
     iptables:
       table: nat
@@ -92,8 +92,8 @@
       to_destination: "{{ nginx_ingress.master_private_ip }}:{{ item }}"
       comment: "managed by kubernetes ansible role"
     loop:
-      - 443
-      - 80              
+      - "443"
+      - "80"
   - name: 'iptables -t nat -A POSTROUTING ! -s 127.0.0.1 -j MASQUERADE'
     iptables:
       table: nat     
