@@ -3,7 +3,7 @@ all: deps lint test-deploy
 
 deps:
 	python -m pip install --upgrade pip
-	pip install ansible==2.9.21
+	pip install ansible==2.9.22
 	printf '[defaults]\nroles_path=../' > ansible.cfg
 	ansible-galaxy install geerlingguy.containerd
 

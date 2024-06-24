@@ -11,7 +11,7 @@
     name: br_netfilter
     state: present
 
-- name: Let iptables see bridged traffic.
+- name: Let iptables see bridged traffic
   sysctl:
     name: "{{ item }}"
     value: '1'
