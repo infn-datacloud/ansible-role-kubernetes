@@ -17,7 +17,7 @@
     with_items:
       - helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
       - helm repo update
-      - "helm install ingress-nginx ingress-nginx/ingress-nginx  --atomic --set controller.allowSnippetAnnotations=false \
+      - "helm install ingress-nginx ingress-nginx/ingress-nginx --atomic --set controller.allowSnippetAnnotations=false \
         -n ingress-nginx --create-namespace --version {{ nginx_ingress_helm_version }} --values /etc/nginx-ingress-values.yml"
   
 - name: Check if cert-manager is already installed
