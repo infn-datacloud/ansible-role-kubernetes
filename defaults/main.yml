@@ -1,5 +1,5 @@
 # Version to install or latest
-kube_version: 1.28.7
+kube_version: 1.28.11
 # Type of node front or wn
 kube_type_of_node: front
 # IP address or name of the Kube front node
@@ -38,21 +38,21 @@ nodelabel: ''
 
 # Software versions
 kube_install_helm: true
-helm_version: v3.13.3
-nginx_ingress_helm_version: 4.9.1
-cert_manager_helm_version: v1.13.5
+helm_version: v3.15.2
+nginx_ingress_helm_version: 4.10.1
+cert_manager_helm_version: v1.14.7
 cert_manager_type: letsencrypt-prod # [self-signed, letsencrypt-staging, letsencrypt-prod]
 cert_manager_email: '' # used only for letsencrypt 
-dashboard_helm_version: 6.0.8
-prometheus_helm_version: 25.17.0
+dashboard_helm_version: 7.5.0
+prometheus_helm_version: 25.22.0
 kube_eagle_helm_version: 2.0.0
-grafana_helm_version: 7.3.6
-calico_version: v3.26
-nerdctl_version: 1.7.4
+grafana_helm_version: 7.3.12
+calico_version: v3.28.0
+nerdctl_version: 1.7.6
 
 # If true, running kubernetes etcd in ramdisk
 etcd_in_RAM: true
 
 # Properties related to GPU support
 enable_gpu: false
-gpu_support_role: git+https://baltig.infn.it/infn-cloud/ansible-role-gpu-support,v1.2.3
+gpu_support_role: git+https://baltig.infn.it/infn-cloud/ansible-role-gpu-support,v1.2.4
