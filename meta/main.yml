@@ -16,4 +16,4 @@ galaxy_info:
     - kubernetes
 
 dependencies:
-  - role: antmelekhin.containerd
+  - role: geerlingguy.containerd
