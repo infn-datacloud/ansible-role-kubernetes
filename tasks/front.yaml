@@ -75,7 +75,7 @@
       chain: FORWARD
       protocol: tcp
       destination: "{{ nginx_ingress.master_private_ip }}"
-      destination_port: {{ item }}
+      destination_port: "{{ item }}"
       jump: ACCEPT
       comment: "managed by kubernetes ansible role"
     loop:
@@ -87,7 +87,7 @@
       chain: PREROUTING
       protocol: tcp
       destination: "{{ nginx_ingress.master_public_ip }}"
-      destination_port: {{ item }}
+      destination_port: "{{ item }}"
       jump: DNAT
       to_destination: "{{ nginx_ingress.master_private_ip }}:{{ item }}"
       comment: "managed by kubernetes ansible role"
