@@ -45,15 +45,6 @@
 - ansible.builtin.include_tasks: helm.yaml
   when: kube_install_helm
 
-#- name: Add Kube API server options
-#  lineinfile:
-#    path: /etc/kubernetes/manifests/kube-apiserver.yaml
-#    line: '    - {{ item.option }}={{ item.value }}'
-#    regexp: '^    - {{ item.option }}='
-#    insertafter: '    - kube-apiserver'
-#  notify: restart kubeapi
-#  with_items: "{{ kube_apiserver_options }}"
-
 - name: Wait Kube to start
   wait_for:
     host: "{{ kube_api_server }}"

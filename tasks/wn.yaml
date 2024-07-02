@@ -39,7 +39,7 @@
 
 - name: Add KUBELET_EXTRA_ARGS
   lineinfile:
-    dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
     line: 'Environment="KUBELET_EXTRA_ARGS={{ kubelet_extra_args }}"'
     regexp: '^Environment="KUBELET_EXTRA_ARGS'
     insertafter: '\[Service\]'

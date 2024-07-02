@@ -1,0 +1,13 @@
+---
+- name: Set correct endpoint for CRI
+  copy:
+    src: files/crictl.yaml
+    dest: /etc/crictl.yaml
+    mode: 0644
+
+- name: Configuring the systemd cgroup driver
+  lineinfile:
+    path: /etc/containerd/config.toml
+    regexp : '^SystemdCgroup = false'
+    line: 'SystemdCgroup = true'
+  notify: restart containerd
