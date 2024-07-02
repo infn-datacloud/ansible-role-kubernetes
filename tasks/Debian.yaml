@@ -1,22 +1,22 @@
 ---
-- name: Install containerd requisites
+- name: Install packages needed to use the Kubernetes apt repository
   apt:
     pkg: 
       - apt-transport-https
       - ca-certificates
-      - software-properties-common
       - curl
+      - gpg
 
-- name: Add repo key
+- name: Download the public signing key for the Kubernetes package repositories
   apt_key:
     # The same signing key is used for all repositories, so you can disregard the version in the URL
     url: https://pkgs.k8s.io/core:/stable:/{{ kube_repo_version }}/deb/Release.key
-    keyring: /etc/apt/trusted.gpg.d/kubernetes-apt-keyring.gpg
+    keyring: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
     state: present
 
 - name: Add kubernetes repo
   apt_repository:
-    repo: "deb [signed-by=/etc/apt/trusted.gpg.d/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ kube_repo_version }}/deb/ /"
+    repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ kube_repo_version }}/deb/ /"
     filename: kubernetes
     state: present
     update_cache: yes
