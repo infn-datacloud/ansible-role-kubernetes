@@ -3,16 +3,10 @@
   ansible.builtin.command: swapoff -a
   changed_when: false
 
-# - name: Include debug info tasks
-#   ansible.builtin.include_tasks: debug-info.yaml
-
 - name: Add the br_netfilter module
   modprobe:
     name: br_netfilter
     state: present
-
-- name: Edit containerd configurations
-  ansible.builtin.include_tasks: containerd-conf.yaml
 
 - name: Let iptables see bridged traffic
   sysctl:
@@ -24,6 +18,9 @@
     - net.bridge.bridge-nf-call-ip6tables
     - net.ipv4.ip_forward
   notify: sysctl-system
+
+- name: Edit containerd configurations
+  ansible.builtin.include_tasks: containerd-conf.yaml
 
 - name: Include tasks for OS family {{ ansible_os_family }}
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yaml"

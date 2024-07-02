@@ -5,6 +5,11 @@
     dest: /etc/crictl.yaml
     mode: 0644
 
+- name: containerd status
+  shell: systemctl status containerd > /root/containerd.txt
+- name: kubelet status
+  shell: systemctl status kubelet > /root/kubelet.txt
+
 - name: Configuring the systemd cgroup driver
   replace:
     path: /etc/containerd/config.toml
