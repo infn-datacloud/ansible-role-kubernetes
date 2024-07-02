@@ -7,8 +7,6 @@
 
 - name: containerd status
   shell: systemctl status containerd > /root/containerd.txt
-- name: kubelet status
-  shell: systemctl status kubelet > /root/kubelet.txt
 
 - name: Configuring the systemd cgroup driver
   replace:
@@ -16,3 +14,6 @@
     regexp : '^(\s+)SystemdCgroup = false(\s+)$'
     replace: '\1SystemdCgroup = true\2'
   notify: restart containerd
+
+- name: containerd status
+  shell: systemctl status containerd > /root/containerd_restarted.txt
