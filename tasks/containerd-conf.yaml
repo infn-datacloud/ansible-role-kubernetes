@@ -9,5 +9,5 @@
   replace:
     path: /etc/containerd/config.toml
     regexp : '^(\s+)SystemdCgroup = false(\s+)$'
-    replace: 'SystemdCgroup = true'
+    replace: '\1SystemdCgroup = true\2'
   notify: restart containerd

@@ -45,11 +45,6 @@
 - ansible.builtin.include_tasks: helm.yaml
   when: kube_install_helm
 
-- name: Wait Kube to start
-  wait_for:
-    host: "{{ kube_api_server }}"
-    port: 6443
-
 - name: Set iptables for ingress floatingIPs
   block:
   - name: Delete all rules in all chains

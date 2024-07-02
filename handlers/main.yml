@@ -7,11 +7,6 @@
     daemon_reload: yes
     state: restarted
 
-- name: wait kubeapi port
-  wait_for:
-    port: 6443
-  listen: "restart kubeapi"
-
 - name: restart daemon-reload
   systemd:
     daemon_reload: yes
