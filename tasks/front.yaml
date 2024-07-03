@@ -130,7 +130,7 @@
 #  when: notready_nodes.stdout | length > 0
 
 - name: Delete NotReady nodes
-  ansible.builtin.shell: "kubectl delete node {{ item }} "
+  ansible.builtin.shell: "kubectl delete node {{ item }}"
   loop:
     "{{ notready_nodes.stdout.split('\n') }}"
   register: output_delete
