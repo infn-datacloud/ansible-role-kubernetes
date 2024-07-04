@@ -19,12 +19,6 @@
     - net.ipv4.ip_forward
   notify: sysctl-system
 
-- name: Set correct endpoint for CRI
-  copy:
-    src: files/crictl.yaml
-    dest: /etc/crictl.yaml
-    mode: 0644
-
 - name: Include tasks for OS family {{ ansible_os_family }}
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yaml"
 

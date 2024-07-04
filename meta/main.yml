@@ -1,10 +1,15 @@
+---
+dependencies:
+  - src: https://github.com/infn-datacloud/ansible-role-containerd.git
+    version: 1.0.0
+
 galaxy_info:
   role_name: kubernetes
   author: Francesco Sinisi, Diego Ciangottini
   description: Install Kubernetes cluster
   company: INFN 
   license: Apache
-  min_ansible_version: "2.9"
+  min_ansible_version: 2.9
   platforms:
   - name: Ubuntu
     versions:
@@ -14,7 +19,3 @@ galaxy_info:
       - bookworm
   galaxy_tags:
     - kubernetes
-
-dependencies:
-  - src: https://github.com/infn-datacloud/ansible-role-containerd.git
-    version: 1.0.0

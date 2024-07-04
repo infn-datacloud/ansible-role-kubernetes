@@ -1,12 +1,10 @@
 ---
-- name: Install packages needed to use the Kubernetes apt repository
+- name: Ensure packages needed to Kubernetes are installed
   apt:
-    pkg: 
-      - apt-transport-https
-      - ca-certificates
-      - curl
+    name:
       - gpg
       - cron
+    state: present
 
 - name: Download the public signing key for the Kubernetes package repositories
   apt_key:
