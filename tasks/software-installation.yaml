@@ -62,7 +62,7 @@
   register: dashboard_present
 
 - name: Install dashboard
-  when: nginx_ingress.enabled and ('dashboard' not in dashboard_present.stdout)
+  when: nginx_ingress.enabled and ('dashboard' not in dashboard_present.stdout) and kube_deploy_dashboard
   block:
   - copy:
       src: files/metric-server.yaml

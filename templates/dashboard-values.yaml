@@ -1,19 +1,10 @@
-service:
-  externalPort: 9090
-
-ingress:
-  annotations:
-    cert-manager.io/cluster-issuer: {{ cluster_issuer_name }}
-  className: nginx
-  enabled: true
-  hosts: 
-  - "dashboard.{{ dns_name }}"
-  tls:
-  - hosts:
+app:
+  ingress:
+    enabled: true
+    hosts: 
     - "dashboard.{{ dns_name }}"
-    secretName: dash-selfsigned
-
-metricsScraper:
-  enabled: true
-metrics-server:
-  enabled: false 
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: {{ cluster_issuer_name }}
+    tls:
+      secretName: dash-selfsigned

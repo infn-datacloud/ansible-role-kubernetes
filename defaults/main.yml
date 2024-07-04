@@ -25,11 +25,9 @@ nginx_ingress:
 dns_name: "{{ nginx_ingress.master_public_ip }}.{{ nginx_ingress.domain }}" 
 
 # Deploy the Dashboard
-kube_deploy_dashboard: k8s
+kube_deploy_dashboard: true
 # Value to pass to the kubeadm init --apiserver-advertise-address option
 kube_api_server: 0.0.0.0
-# Flag to set Metrics-Server to be installed
-kube_install_metrics: true 
 # Flag to set the nginx ingress controller to be installed
 kube_flanneld_extra_args: []
 

@@ -31,8 +31,6 @@ The variables that can be passed to this role and a brief description about them
     # A set of git repos and paths to be applied in the cluster. Following this format:
     # kube_apply_repos: [{repo: "https://github.com/kubernetes-incubator/metrics-server", version: "master", path: "deploy/1.8+/"}]
     kube_apply_repos: []
-    # Flag to set Metrics-Server to be installed
-    kube_install_metrics: false
     # Flag to enable GPU support
     enable_gpu: false
     # Name (and version) of the Ansible role to include if `enable_gpu == true'
