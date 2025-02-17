@@ -1,26 +1,4 @@
 ---
-- name: Disable swap
-  ansible.builtin.command: swapoff -a
-  changed_when: false
-
-- name: Add the br_netfilter module
-  modprobe:
-    name: br_netfilter
-    state: present
-
-- name: Let iptables see bridged traffic
-  sysctl:
-    name: "{{ item }}"
-    value: '1'
-    state: present
-  loop:
-    - net.bridge.bridge-nf-call-iptables
-    - net.bridge.bridge-nf-call-ip6tables
-    - net.ipv4.ip_forward
-  notify: sysctl-system
-
-- name: Include tasks for OS family {{ ansible_os_family }}
-  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yaml"
 
 - name: Include tasks for node type {{ kube_type_of_node }}
   ansible.builtin.include_tasks: "{{ kube_type_of_node }}.yaml"

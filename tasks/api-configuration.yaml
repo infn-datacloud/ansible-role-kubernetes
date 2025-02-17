@@ -6,7 +6,7 @@
       dest: /etc/api-server-ingress.yaml
   - command: kubectl apply -f /etc/api-server-ingress.yaml
     environment:
-      KUBECONFIG: /etc/kubernetes/admin.conf
+      KUBECONFIG: /etc/rancher/rke2/rke2.yaml
 
 - name: Create service account for remote access
   block:
@@ -25,13 +25,13 @@
       kubectl config --kubeconfig=/etc/kubeconfig set-context public --cluster=public --namespace=default --user=admin
       kubectl config --kubeconfig=/etc/kubeconfig use-context public
     environment:
-      KUBECONFIG: /etc/kubernetes/admin.conf
+      KUBECONFIG: /etc/rancher/rke2/rke2.yaml
 
 - name: Register kubeconfig
   shell: kubectl config --kubeconfig=/etc/kubeconfig view --raw
   register: kubeconfig
   environment:
-    KUBECONFIG: /etc/kubernetes/admin.conf
+    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
 
 - name: KUBECONFIG file
   debug:
@@ -46,7 +46,7 @@
       mode: '0750'
   - name: Copy admin file
     copy:
-      src: /etc/kubernetes/admin.conf
+      src: /etc/rancher/rke2/rke2.yaml
       dest: /root/.kube/config
       owner: root
       group: root

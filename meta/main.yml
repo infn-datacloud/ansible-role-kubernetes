@@ -1,12 +1,12 @@
 ---
 dependencies:
-  - src: https://github.com/infn-datacloud/ansible-role-containerd.git
-    version: 1.0.0
+  - src: https://github.com/lablabs/ansible-role-rke2.git
+    version: 1.39.0
 
 galaxy_info:
   role_name: kubernetes
-  author: Francesco Sinisi, Diego Ciangottini
-  description: Install Kubernetes cluster
+  author: Francesco Sinisi
+  description: Customize a k8s cluster
   company: INFN 
   license: Apache-2.0
   min_ansible_version: "2.9"
