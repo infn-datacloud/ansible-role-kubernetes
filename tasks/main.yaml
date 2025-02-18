@@ -1,21 +1,4 @@
 ---
-
-- name: Tipo nodo
-  ansible.builtin.debug:
-    msg: "Tipo ondo: {{ kube_type_of_node }}"
-
-- name: IP pubblico
-  ansible.builtin.debug:
-    msg: "IP pubblico: {{ rke2_api_ip }}"
-
-- name: IP privato
-  ansible.builtin.debug:
-    msg: "IP privato: {{ rke2_api_private_ip }}"
-
-- name: IP variabile
-  ansible.builtin.debug:
-    msg: "IP variabile: {{ master_public_ip }}"
-
 - name: Include tasks for node type {{ kube_type_of_node }}
   ansible.builtin.include_tasks: "{{ kube_type_of_node }}.yaml"
 
