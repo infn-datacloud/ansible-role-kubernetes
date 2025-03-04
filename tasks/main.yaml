@@ -4,4 +4,4 @@
 
 - name: Add GPU support for node type {{ kube_type_of_node }}
   ansible.builtin.include_tasks: gpu-support.yaml
-  when: (enable_gpu | default(false) | bool)
+  when: ( enable_gpu | default(false) | bool )
