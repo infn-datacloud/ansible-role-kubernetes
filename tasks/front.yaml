@@ -1,4 +1,10 @@
 ---
+- name: Add kubectl PATH
+  ansible.builtin.lineinfile:
+    path: /etc/profile.d/kubepath.sh
+    line: export PATH="/var/lib/rancher/rke2/bin:$PATH"
+    create: yes
+
 - ansible.builtin.include_tasks: etcdRAM_pre.yaml
   when: etcd_in_RAM
 
