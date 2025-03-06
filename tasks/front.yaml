@@ -6,7 +6,7 @@
 
 - name: Debug Spool
   ansible.builtin.debug:
-    msg: "domain: {{ domain }}"
+    msg: "kube_domain: {{ kube_domain }}"
   ignore_errors: true
 
 - name: Debug Spool

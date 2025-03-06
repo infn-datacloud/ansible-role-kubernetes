@@ -2,8 +2,8 @@
 kube_type_of_node: front
 
 kube_front_end_ip: 0.0.0.0
-domain: cloud.infn.it
-dns_name: "{{ kube_front_end_ip }}.{{ domain }}" 
+kube_domain: cloud.infn.it
+dns_name: "{{ kube_front_end_ip }}.{{ kube_domain }}" 
 
 # Deploy the Dashboard
 kube_deploy_dashboard: true
