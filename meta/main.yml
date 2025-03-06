@@ -9,7 +9,7 @@ galaxy_info:
   description: Customize a k8s cluster
   company: INFN 
   license: Apache-2.0
-  min_ansible_version: "2.9"
+  min_ansible_version: "2.10"
   platforms:
   - name: Ubuntu
     versions:
