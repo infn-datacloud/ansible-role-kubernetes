@@ -2,7 +2,7 @@
 - name: Copy file with owner and permissions
   ansible.builtin.copy:
     src: /var/lib/rancher/rke2/bin/kubectl
-    dest: /bin/kubectl
+    dest: /usr/bin/kubectl
     owner: root
     group: root
     mode: '0755'
