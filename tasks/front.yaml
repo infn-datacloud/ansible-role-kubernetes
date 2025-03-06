@@ -13,8 +13,10 @@
     line: "{{ item }}"
     create: yes
   with_items:
-    - export PATH="/var/lib/rancher/rke2/bin:$PATH"
     - export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
+    - export CRI_CONFIG_FILE=/var/lib/rancher/rke2/agent/etc/crictl.yaml
+    - export PATH="/var/lib/rancher/rke2/bin:$PATH"
+    - alias k=kubectl
 
 - ansible.builtin.include_tasks: etcdRAM_pre.yaml
   when: etcd_in_RAM

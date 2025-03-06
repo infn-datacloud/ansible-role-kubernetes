@@ -20,11 +20,6 @@
 
 - name: Copy files for etcdRAM
   block:
-  # - name: Copy cronjob file
-  #   copy:
-  #     src: files/files_etcdRAM/etc/cron.d/etcdRAM-etcd
-  #     dest: /etc/cron.d/etcdRAM-etcd
-  #     mode: '0644'
   - name: Copy scripts
     copy:
       src: files/files_etcdRAM/opt/etcdRAM/bin/
@@ -36,9 +31,6 @@
       dest: /usr/lib/systemd/system/kubelet.service.d/
       mode: '0644'
     notify: restart daemon-reload
-
-# - name: Add a cron file from dir /etc/cron.d
-#   ansible.builtin.shell: "crontab /etc/cron.d/etcdRAM-etcd"
 
 - name: Running periodic jobs
   block:

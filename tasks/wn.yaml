@@ -11,3 +11,4 @@
     environment:
       KUBECONFIG: /etc/rancher/rke2/rke2.yaml
     delegate_to: "{{ kube_front_end_ip }}"
+    ignore_errors: true
