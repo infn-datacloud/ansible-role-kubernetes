@@ -1,9 +1,9 @@
 # Type of node front or wn
 kube_type_of_node: front
 
-master_public_ip: 0.0.0.0
+kube_front_end_ip: 0.0.0.0
 domain: ''
-dns_name: "{{ master_public_ip }}.{{ domain }}" 
+dns_name: "{{ kube_front_end_ip }}.{{ domain }}" 
 
 # Deploy the Dashboard
 kube_deploy_dashboard: true
