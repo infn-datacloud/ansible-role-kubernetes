@@ -7,7 +7,7 @@
     register: hostname
     changed_when: false
   - name: Set node Label
-    command: kubectl label node {{ hostname.stdout }} {{ nodelabel }}
+    ansible.builtin.command: kubectl label node {{ IM_NODE_HOSTNAME }} {{ nodelabel }}
     environment:
       KUBECONFIG: /etc/rancher/rke2/rke2.yaml
     delegate_to: "{{ kube_front_end_ip }}"
