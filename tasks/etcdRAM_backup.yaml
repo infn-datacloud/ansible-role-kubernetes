@@ -40,10 +40,10 @@
 # - name: Add a cron file from dir /etc/cron.d
 #   ansible.builtin.shell: "crontab /etc/cron.d/etcdRAM-etcd"
 
-# - name: Install crontab
-#   ansible.builtin.package:
-#     name: crontab
-#     state: present
+- name: Install crontab
+  ansible.builtin.package:
+    name: crontab
+    state: present
 
 - name: Running periodic jobs
   block:
