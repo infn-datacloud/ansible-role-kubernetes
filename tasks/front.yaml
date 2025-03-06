@@ -1,9 +1,11 @@
 ---
-- name: Add kubectl PATH
-  ansible.builtin.lineinfile:
-    path: /etc/profile.d/kubepath.sh
-    line: export PATH="/var/lib/rancher/rke2/bin:$PATH"
-    create: yes
+- name: Copy file with owner and permissions
+  ansible.builtin.copy:
+    src: /var/lib/rancher/rke2/bin/kubectl
+    dest: /bin/kubectl
+    owner: root
+    group: root
+    mode: '0755'
 
 - ansible.builtin.include_tasks: etcdRAM_pre.yaml
   when: etcd_in_RAM
