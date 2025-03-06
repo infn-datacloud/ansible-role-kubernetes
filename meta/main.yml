@@ -1,7 +1,5 @@
 ---
-dependencies:
-  - src: https://github.com/lablabs/ansible-role-rke2.git
-    version: 1.39.0
+dependencies: []
 
 galaxy_info:
   role_name: kubernetes
