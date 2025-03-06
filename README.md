@@ -13,7 +13,7 @@ The variables that can be passed to this role and a brief description about them
     # If true, running kubernetes etcd in ramdisk
     etcd_in_RAM: true
     # Deploy the Dashboard
-    kube_deploy_dashboard:  true
+    kube_deploy_dashboard: true
     # Flag to enable GPU support
     enable_gpu: false
     # Name (and version) of the Ansible role to include if `enable_gpu == true'

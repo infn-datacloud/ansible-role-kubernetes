@@ -7,6 +7,15 @@
     group: root
     mode: '0755'
 
+- name: Add kubectl PATHs
+  ansible.builtin.lineinfile:
+    path: /etc/profile.d/kubepath.sh
+    line: "{{ item }}"
+    create: yes
+  with_items:
+    - export PATH="/var/lib/rancher/rke2/bin:$PATH"
+    - export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
+
 - ansible.builtin.include_tasks: etcdRAM_pre.yaml
   when: etcd_in_RAM
 

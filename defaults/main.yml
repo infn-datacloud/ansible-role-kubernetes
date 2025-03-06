@@ -17,7 +17,7 @@ helm_version: v3.17.1
 cert_manager_helm_version: v1.15.5
 cert_manager_type: letsencrypt-prod # [self-signed, letsencrypt-staging, letsencrypt-prod]
 cert_manager_email: '' # used only for letsencrypt 
-dashboard_helm_version: 7.10.4
+dashboard_helm_version: 7.11.1
 prometheus_helm_version: 25.30.2
 kube_eagle_helm_version: 2.0.0
 grafana_helm_version: 8.3.8
