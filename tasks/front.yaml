@@ -1,19 +1,4 @@
 ---
-- name: Debug Spool
-  ansible.builtin.debug:
-    msg: "kube_front_end_ip: {{ kube_front_end_ip }}"
-  ignore_errors: true
-
-- name: Debug Spool
-  ansible.builtin.debug:
-    msg: "kube_domain: {{ kube_domain }}"
-  ignore_errors: true
-
-- name: Debug Spool
-  ansible.builtin.debug:
-    msg: "dns_name: {{ dns_name }}"
-  ignore_errors: true
-
 - name: Copy file with owner and permissions
   ansible.builtin.copy:
     src: /var/lib/rancher/rke2/bin/kubectl
