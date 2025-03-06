@@ -40,11 +40,6 @@
 # - name: Add a cron file from dir /etc/cron.d
 #   ansible.builtin.shell: "crontab /etc/cron.d/etcdRAM-etcd"
 
-- name: Install crontab
-  ansible.builtin.package:
-    name: crontab
-    state: present
-
 - name: Running periodic jobs
   block:
   - name: Run etcd-cron job
@@ -53,7 +48,6 @@
       minute: "*/20"
       user: root
       job: "/opt/etcdRAM/bin/etcd-cron > /var/log/etcdRAM-etcd-backup 2>&1"
-      cron_file: etcdRAM-etcd
   - name: Run the job once a day
     ansible.builtin.cron:
       name: "Run etcdctl job"
@@ -61,4 +55,3 @@
       hour: "0"
       user: root
       job: "/opt/etcdRAM/bin/etcdctl defrag --cluster > /var/log/etcdRAM-etcd-defrag 2>&1"
-      cron_file: etcdRAM-etcd
