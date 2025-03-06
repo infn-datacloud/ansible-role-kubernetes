@@ -4,7 +4,7 @@
   - template:
       src: templates/api-server-ingress.yaml
       dest: /etc/api-server-ingress.yaml
-  - command: kubectl apply -f /etc/api-server-ingress.yaml
+  - ansible.builtin.command: kubectl apply -f /etc/api-server-ingress.yaml
     environment:
       KUBECONFIG: /etc/rancher/rke2/rke2.yaml
 

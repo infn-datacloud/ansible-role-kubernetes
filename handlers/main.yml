@@ -1,5 +1,5 @@
 - name: sysctl-system
-  command: sysctl --system
+  ansible.builtin.command: sysctl --system
 
 - name: restart kubelet
   service:

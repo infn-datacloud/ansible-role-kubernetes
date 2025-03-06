@@ -7,7 +7,7 @@
 
 - name: Install cert manager
   when: ('cert-manager' not in cert_manager_present.stdout)
-  command: "{{ item }}"
+  ansible.builtin.command: "{{ item }}"
   environment:
     KUBECONFIG: /etc/rancher/rke2/rke2.yaml
   with_items:
@@ -16,7 +16,7 @@
     - "helm install cert-manager jetstack/cert-manager --atomic -n cert-manager --create-namespace --version {{ cert_manager_helm_version }} --set installCRDs=true"
  
 - name: Wait Cert-Manager to start
-  command: kubectl get deployment -n cert-manager -l 'app=webhook' -o 'jsonpath={.items[0].status.readyReplicas}'
+  ansible.builtin.command: kubectl get deployment -n cert-manager -l 'app=webhook' -o 'jsonpath={.items[0].status.readyReplicas}'
   environment:
     KUBECONFIG: /etc/rancher/rke2/rke2.yaml
   register: cert_manager_webhook_deployment_status
@@ -29,7 +29,7 @@
   - template:
       src: templates/cluster-certs.yaml
       dest: /etc/cluster-certs.yml 
-  - command: kubectl apply -f /etc/cluster-certs.yml
+  - ansible.builtin.command: kubectl apply -f /etc/cluster-certs.yml
     environment:
       KUBECONFIG: /etc/rancher/rke2/rke2.yaml
 
@@ -45,7 +45,7 @@
   - template:
       src: templates/dashboard-values.yaml
       dest: /etc/dashboard-values.yml
-  - command: "{{ item }}"
+  - ansible.builtin.command: "{{ item }}"
     environment:
       KUBECONFIG: /etc/rancher/rke2/rke2.yaml
     with_items:
@@ -65,7 +65,7 @@
   - template:
       src: templates/prometheus-values.yaml
       dest: /etc/prometheus-values.yml
-  - command: "{{ item }}"
+  - ansible.builtin.command: "{{ item }}"
     environment:
       KUBECONFIG: /etc/rancher/rke2/rke2.yaml
     with_items:
