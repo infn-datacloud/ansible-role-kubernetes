@@ -22,6 +22,7 @@ The variables that can be passed to this role and a brief description about them
 ## Dependencies
 
 - ansible-role-gpu-support (if `enable_gpu == true`)
+- ansible-role-cron
 
 ## ETCD in RAM
 
