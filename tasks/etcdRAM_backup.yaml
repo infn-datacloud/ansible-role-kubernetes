@@ -20,11 +20,6 @@
 
 - name: Copy files for etcdRAM
   block:
-  - name: Copy cronjob file
-    copy:
-      src: files/files_etcdRAM/etc/cron.d/etcdRAM-etcd
-      dest: /etc/cron.d/etcdRAM-etcd
-      mode: '0644'
   - name: Copy scripts
     copy:
       src: files/files_etcdRAM/opt/etcdRAM/bin/
@@ -37,5 +32,18 @@
       mode: '0644'
     notify: restart daemon-reload
 
-- name: Add a cron file from dir /etc/cron.d
-  ansible.builtin.shell: "crontab /etc/cron.d/etcdRAM-etcd"
+- name: Running periodic jobs
+  block:
+  - name: Run etcd-cron job
+    ansible.builtin.cron:
+      name: "Run the job every 20 minutes"
+      minute: "*/20"
+      user: root
+      job: "/opt/etcdRAM/bin/etcd-cron > /var/log/etcdRAM-etcd-backup 2>&1"
+  - name: Run the job once a day
+    ansible.builtin.cron:
+      name: "Run etcdctl job"
+      minute: "30"
+      hour: "0"
+      user: root
+      job: "/opt/etcdRAM/bin/etcdctl defrag --cluster > /var/log/etcdRAM-etcd-defrag 2>&1"

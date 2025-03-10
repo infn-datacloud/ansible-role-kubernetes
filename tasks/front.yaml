@@ -1,99 +1,34 @@
 ---
+- name: Copy file with owner and permissions
+  ansible.builtin.copy:
+    src: /var/lib/rancher/rke2/bin/kubectl
+    dest: /usr/bin/kubectl
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Add kubectl PATHs
+  ansible.builtin.lineinfile:
+    path: /etc/profile.d/kubepath.sh
+    line: "{{ item }}"
+    create: yes
+  with_items:
+    - export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
+    - export CRI_CONFIG_FILE=/var/lib/rancher/rke2/agent/etc/crictl.yaml
+    - export PATH="/var/lib/rancher/rke2/bin:$PATH"
+    - alias k=kubectl
+
 - ansible.builtin.include_tasks: etcdRAM_pre.yaml
   when: etcd_in_RAM
 
-- name: Create a directory if it does not exist
-  file:
-    path: /etc/kubernetes/pki/
-    state: directory
-    mode: '0755'
-
-- name: Create auth data file with an admin user
-  copy:
-    content: '{{ kube_admin_token }},{{ kube_admin_username }},100,"users,system:masters"'
-    dest: /etc/kubernetes/pki/auth
-    mode: '0600'
-
-- name: Kubeadm init
-  command: kubeadm init --pod-network-cidr={{ kube_pod_network_cidr }} --token={{ kube_token }} --token-ttl {{ kube_token_ttl }} --apiserver-advertise-address={{ kube_api_server }} creates=/etc/kubernetes/admin.conf
-
-- name: Wait Kube to start
-  wait_for:
-    host: "{{ kube_api_server }}"
-    port: 6443
-
-- name: Install flannel
-  block:
-  - template:
-      src: templates/flannel.yaml
-      dest: /etc/kube-flannel.yml
-  - command: kubectl apply -f /etc/kube-flannel.yml creates=/etc/cni/net.d/10-flannel.conflist
-    environment:
-      KUBECONFIG: /etc/kubernetes/admin.conf
-  when: network_manager == "flannel"
-
-- name: Install calico
-  block:
-  - get_url:
-      url: https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests/tigera-operator.yaml
-      dest: /etc/kube-calico.yml
-  - command: kubectl apply -f /etc/kube-calico.yml
-    environment:
-      KUBECONFIG: /etc/kubernetes/admin.conf
-  when: network_manager == "calico"
-
 - ansible.builtin.include_tasks: helm.yaml
   when: kube_install_helm
-
-- name: Set iptables for ingress floatingIPs
-  block:
-  - name: Delete all rules in all chains
-    iptables: 
-      flush: yes
-  - name: 'iptables -A FORWARD -p tcp -d {{ nginx_ingress.master_private_ip }} --dport 443,80 -j ACCEPT'
-    iptables:
-      chain: FORWARD
-      protocol: tcp
-      destination: "{{ nginx_ingress.master_private_ip }}"
-      destination_port: "{{ item }}"
-      jump: ACCEPT
-      comment: "managed by kubernetes ansible role"
-    loop:
-      - "443"
-      - "80"
-  - name: 'iptables -t nat -A PREROUTING -p tcp -d {{ nginx_ingress.master_public_ip }} --dport 443,80 -j DNAT --to-destination {{ nginx_ingress.master_private_ip }}:443,80'
-    iptables:
-      table: nat
-      chain: PREROUTING
-      protocol: tcp
-      destination: "{{ nginx_ingress.master_public_ip }}"
-      destination_port: "{{ item }}"
-      jump: DNAT
-      to_destination: "{{ nginx_ingress.master_private_ip }}:{{ item }}"
-      comment: "managed by kubernetes ansible role"
-    loop:
-      - "443"
-      - "80"
-  - name: 'iptables -t nat -A POSTROUTING ! -s 127.0.0.1 -j MASQUERADE'
-    iptables:
-      table: nat     
-      chain: POSTROUTING
-      source: '! 127.0.0.1'
-      jump: MASQUERADE
-      comment: "managed by kubernetes ansible role"
-  - name: save iptable configuration
-    command: iptables-save
-
-- name: Wait Kube to start
-  wait_for:
-    host: "{{ kube_api_server }}"
-    port: 6443
 
 - name: Collect NotReady nodes
   ansible.builtin.shell: "kubectl get nodes | grep NotReady | grep -v vnode-0 | awk '{print $1}'"
   register: notready_nodes
   environment:
-    KUBECONFIG: /etc/kubernetes/admin.conf
+    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
   failed_when: false
   changed_when: false
 
@@ -107,7 +42,7 @@
     "{{ notready_nodes.stdout.split('\n') }}"
   register: output_cordon
   environment:
-    KUBECONFIG: /etc/kubernetes/admin.conf
+    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
   when: notready_nodes.stdout | length > 0
 
 - name: Output cordon nodes
@@ -120,7 +55,7 @@
 #  loop:
 #    "{{ notready_nodes.stdout.split('\n') }}"
 #  environment:
-#    KUBECONFIG: /etc/kubernetes/admin.conf
+#    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
 #  register: output_drain
 #  when: notready_nodes.stdout | length > 0
 
@@ -135,7 +70,7 @@
     "{{ notready_nodes.stdout.split('\n') }}"
   register: output_delete
   environment:
-    KUBECONFIG: /etc/kubernetes/admin.conf
+    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
   when: notready_nodes.stdout | length > 0
 
 - name: Output node deletion

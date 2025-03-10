@@ -4,9 +4,9 @@
   - template:
       src: templates/api-server-ingress.yaml
       dest: /etc/api-server-ingress.yaml
-  - command: kubectl apply -f /etc/api-server-ingress.yaml
+  - ansible.builtin.command: kubectl apply -f /etc/api-server-ingress.yaml
     environment:
-      KUBECONFIG: /etc/kubernetes/admin.conf
+      KUBECONFIG: /etc/rancher/rke2/rke2.yaml
 
 - name: Create service account for remote access
   block:
@@ -25,30 +25,14 @@
       kubectl config --kubeconfig=/etc/kubeconfig set-context public --cluster=public --namespace=default --user=admin
       kubectl config --kubeconfig=/etc/kubeconfig use-context public
     environment:
-      KUBECONFIG: /etc/kubernetes/admin.conf
+      KUBECONFIG: /etc/rancher/rke2/rke2.yaml
 
 - name: Register kubeconfig
   shell: kubectl config --kubeconfig=/etc/kubeconfig view --raw
   register: kubeconfig
   environment:
-    KUBECONFIG: /etc/kubernetes/admin.conf
+    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
 
 - name: KUBECONFIG file
   debug:
     var: kubeconfig.stdout.split('\n')
-
-- name: Organizing Cluster Access Using kubeconfig Files
-  block:
-  - name: Create kube directory if not exist
-    file:
-      path: /root/.kube/
-      state: directory
-      mode: '0750'
-  - name: Copy admin file
-    copy:
-      src: /etc/kubernetes/admin.conf
-      dest: /root/.kube/config
-      owner: root
-      group: root
-      mode: '0600'
-      remote_src: yes

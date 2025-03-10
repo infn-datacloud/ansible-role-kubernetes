@@ -1,52 +1,27 @@
-# Version to install or latest
-kube_version: 1.29.6
 # Type of node front or wn
 kube_type_of_node: front
-# IP address or name of the Kube front node
-kube_server: "{{ ansible_default_ipv4.address }}"
-# Token
-kube_token: "kube01.{{ lookup('password', '/var/tmp/tokenpass chars=ascii_lowercase,digits length=16') }}"
-# Token TTL duration (0 do not expire)
-kube_token_ttl: 0
-# POD network cidr
-kube_pod_network_cidr: 10.244.0.0/16
 
-network_manager: flannel
-# Kubelet extra args
-kubelet_extra_args: ''
-# Kube API server options
-kube_apiserver_options: []
-#  - {option: "--service-node-port-range", value: "80-32767"}
-nginx_ingress:
-  enabled: true
-  master_private_ip: 0.0.0.0
-  master_public_ip: 0.0.0.0
-  domain: ''
-dns_name: "{{ nginx_ingress.master_public_ip }}.{{ nginx_ingress.domain }}" 
+kube_front_end_ip: 0.0.0.0
+kube_domain: cloud.infn.it
+dns_name: "{{ kube_front_end_ip }}.{{ kube_domain }}" 
 
 # Deploy the Dashboard
 kube_deploy_dashboard: true
-# Value to pass to the kubeadm init --apiserver-advertise-address option
-kube_api_server: 0.0.0.0
-# Flag to set the nginx ingress controller to be installed
-kube_flanneld_extra_args: []
 
 node_name: AUTO
 nodelabel: ''
 
 # Software versions
 kube_install_helm: true
-helm_version: v3.15.2
-nginx_ingress_helm_version: 4.10.1
-cert_manager_helm_version: v1.15.1
+helm_version: v3.17.1
+cert_manager_helm_version: v1.16.4
 cert_manager_type: letsencrypt-prod # [self-signed, letsencrypt-staging, letsencrypt-prod]
 cert_manager_email: '' # used only for letsencrypt 
-dashboard_helm_version: 7.5.0
-prometheus_helm_version: 25.22.0
+dashboard_helm_version: 7.10.5
+prometheus_helm_version: 27.5.1
 kube_eagle_helm_version: 2.0.0
-grafana_helm_version: 8.3.1
-calico_version: v3.28.0
-nerdctl_version: 1.7.6
+grafana_helm_version: 8.10.2
+nerdctl_version: 2.0.3
 
 # If true, running kubernetes etcd in ramdisk
 etcd_in_RAM: true
