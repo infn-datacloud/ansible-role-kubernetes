@@ -36,19 +36,3 @@
 - name: KUBECONFIG file
   debug:
     var: kubeconfig.stdout.split('\n')
-
-- name: Organizing Cluster Access Using kubeconfig Files
-  block:
-  - name: Create kube directory if not exist
-    file:
-      path: /root/.kube/
-      state: directory
-      mode: '0750'
-  - name: Copy admin file
-    copy:
-      src: /etc/rancher/rke2/rke2.yaml
-      dest: /root/.kube/config
-      owner: root
-      group: root
-      mode: '0600'
-      remote_src: yes
