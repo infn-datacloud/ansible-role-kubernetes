@@ -3,7 +3,7 @@ all: deps lint test-deploy
 
 deps:
 	python -m pip install --upgrade pip
-	pip install ansible==2.9.22
+	pip install ansible==2.10.7
 	printf '[defaults]\nroles_path=../' > ansible.cfg
 	ansible-galaxy install infn-datacloud.containerd
 
