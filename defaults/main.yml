@@ -24,7 +24,7 @@ grafana_helm_version: 8.10.2
 nerdctl_version: 2.0.3
 
 # If true, running kubernetes etcd in ramdisk
-etcd_in_RAM: false
+etcd_in_RAM: true
 
 # Properties related to GPU support
 enable_gpu: false
