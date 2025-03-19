@@ -1,7 +1,5 @@
 ---
-dependencies:
-  - src: https://github.com/robertdebock/ansible-role-cron.git
-    version: 2.2.5
+dependencies: []
 
 galaxy_info:
   role_name: kubernetes

@@ -1,4 +1,13 @@
 ---
+- name: Ensure packages needed to Kubernetes are installed
+  apt:
+    name:
+      - gpg
+      - cron
+      - open-iscsi
+      - nfs-common
+    update_cache: yes
+
 - name: Include tasks for node type {{ kube_type_of_node }}
   ansible.builtin.include_tasks: "{{ kube_type_of_node }}.yaml"
 
