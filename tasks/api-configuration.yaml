@@ -6,7 +6,7 @@
       dest: /etc/api-server-ingress.yaml
   - ansible.builtin.command: kubectl apply -f /etc/api-server-ingress.yaml
     environment:
-      KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+      KUBECONFIG: "{{ kubeconfig_path }}"
 
 - name: Create service account for remote access
   block:
@@ -25,13 +25,13 @@
       kubectl config --kubeconfig=/etc/kubeconfig set-context public --cluster=public --namespace=default --user=admin
       kubectl config --kubeconfig=/etc/kubeconfig use-context public
     environment:
-      KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+      KUBECONFIG: "{{ kubeconfig_path }}"
 
 - name: Register kubeconfig
   shell: kubectl config --kubeconfig=/etc/kubeconfig view --raw
   register: kubeconfig
   environment:
-    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+    KUBECONFIG: "{{ kubeconfig_path }}"
 
 - name: KUBECONFIG file
   debug:

@@ -9,6 +9,6 @@
   - name: Set node Label
     ansible.builtin.command: kubectl label node {{ IM_NODE_HOSTNAME }} {{ nodelabel }}
     environment:
-      KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+      KUBECONFIG: "{{ kubeconfig_path }}"
     delegate_to: "{{ kube_front_end_ip }}"
     ignore_errors: true

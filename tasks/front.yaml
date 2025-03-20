@@ -13,7 +13,7 @@
     line: "{{ item }}"
     create: yes
   with_items:
-    - export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
+    - "export KUBECONFIG={{ kubeconfig_path }}"
     - export CRI_CONFIG_FILE=/var/lib/rancher/rke2/agent/etc/crictl.yaml
     - export PATH="/var/lib/rancher/rke2/bin:$PATH"
     - alias k=kubectl
@@ -28,7 +28,7 @@
   ansible.builtin.shell: "kubectl get nodes | grep NotReady | grep -v vnode-0 | awk '{print $1}'"
   register: notready_nodes
   environment:
-    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+    KUBECONFIG: "{{ kubeconfig_path }}"
   failed_when: false
   changed_when: false
 
@@ -42,7 +42,7 @@
     "{{ notready_nodes.stdout.split('\n') }}"
   register: output_cordon
   environment:
-    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+    KUBECONFIG: "{{ kubeconfig_path }}"
   when: notready_nodes.stdout | length > 0
 
 - name: Output cordon nodes
@@ -55,7 +55,7 @@
 #  loop:
 #    "{{ notready_nodes.stdout.split('\n') }}"
 #  environment:
-#    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+#    KUBECONFIG: "{{ kubeconfig_path }}"
 #  register: output_drain
 #  when: notready_nodes.stdout | length > 0
 
@@ -70,7 +70,7 @@
     "{{ notready_nodes.stdout.split('\n') }}"
   register: output_delete
   environment:
-    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+    KUBECONFIG: "{{ kubeconfig_path }}"
   when: notready_nodes.stdout | length > 0
 
 - name: Output node deletion

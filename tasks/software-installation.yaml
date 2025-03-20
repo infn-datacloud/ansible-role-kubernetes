@@ -2,14 +2,14 @@
 - name: Check if cert-manager is already installed
   ansible.builtin.shell: "helm list -a -n cert-manager"
   environment:
-    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+    KUBECONFIG: "{{ kubeconfig_path }}"
   register: cert_manager_present
 
 - name: Install cert manager
   when: ('cert-manager' not in cert_manager_present.stdout)
   ansible.builtin.command: "{{ item }}"
   environment:
-    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+    KUBECONFIG: "{{ kubeconfig_path }}"
   with_items:
     - helm repo add jetstack https://charts.jetstack.io
     - helm repo update
@@ -18,7 +18,7 @@
 - name: Wait Cert-Manager to start
   ansible.builtin.command: kubectl get deployment -n cert-manager -l 'app=webhook' -o 'jsonpath={.items[0].status.readyReplicas}'
   environment:
-    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+    KUBECONFIG: "{{ kubeconfig_path }}"
   register: cert_manager_webhook_deployment_status
   until: (cert_manager_webhook_deployment_status.stdout | default(0) | int) >= 1
   retries: 30
@@ -31,12 +31,12 @@
       dest: /etc/cluster-certs.yml 
   - ansible.builtin.command: kubectl apply -f /etc/cluster-certs.yml
     environment:
-      KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+      KUBECONFIG: "{{ kubeconfig_path }}"
 
 - name: Check if dashboard is already installed
   ansible.builtin.shell: "helm list -a -n kube-system"
   environment:
-    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+    KUBECONFIG: "{{ kubeconfig_path }}"
   register: dashboard_present
 
 - name: Install dashboard
@@ -47,7 +47,7 @@
       dest: /etc/dashboard-values.yml
   - ansible.builtin.command: "{{ item }}"
     environment:
-      KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+      KUBECONFIG: "{{ kubeconfig_path }}"
     with_items:
       - helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
       - helm repo update
@@ -56,7 +56,7 @@
 - name: Check if prometheus is already installed
   ansible.builtin.shell: "helm list -a -n prometheus"
   environment:
-    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+    KUBECONFIG: "{{ kubeconfig_path }}"
   register: prometheus_present
 
 - name: Install prometheus
@@ -67,7 +67,7 @@
       dest: /etc/prometheus-values.yml
   - ansible.builtin.command: "{{ item }}"
     environment:
-      KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+      KUBECONFIG: "{{ kubeconfig_path }}"
     with_items:
       - helm repo add prometheus https://prometheus-community.github.io/helm-charts
       - helm repo update
@@ -76,14 +76,14 @@
 - name: Check if kube-eagle is already installed
   ansible.builtin.shell: "helm list -a -n kube-eagle"
   environment:
-    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+    KUBECONFIG: "{{ kubeconfig_path }}"
   register: kube_eagle_present
 
 - name: Install kube-eagle
   when: ('kube-eagle' not in kube_eagle_present.stdout)
   ansible.builtin.command: "{{ item }}"
   environment:
-    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+    KUBECONFIG: "{{ kubeconfig_path }}"
   with_items:
     - helm repo add kube-eagle https://raw.githubusercontent.com/cloudworkz/kube-eagle-helm-chart/master
     - helm repo update
@@ -92,7 +92,7 @@
 - name: Check if grafana is already installed
   ansible.builtin.shell: "helm list -a -n grafana"
   environment:
-    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+    KUBECONFIG: "{{ kubeconfig_path }}"
   register: grafana_present
 
 - name: Install grafana
@@ -111,18 +111,18 @@
     - name: Create grafana namespace
       ansible.builtin.command: kubectl create ns grafana
       environment:
-        KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+        KUBECONFIG: "{{ kubeconfig_path }}"
     - name: Create grafana secret
       ansible.builtin.command: kubectl apply -n grafana -f /etc/grafana-secret.yml
       register: kubectl_grafana_secret_apply
       environment:
-        KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+        KUBECONFIG: "{{ kubeconfig_path }}"
       changed_when:
         - kubectl_grafana_secret_apply.rc == 0
     - name: Install grafana
       ansible.builtin.command: "{{ item }}"
       environment:
-        KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+        KUBECONFIG: "{{ kubeconfig_path }}"
       with_items:
         - helm repo add grafana https://grafana.github.io/helm-charts
         - helm repo update
