@@ -4,7 +4,6 @@
     path: /usr/local/bin/helm
   register: helm
 
-# Install HELM
 - name: Install HELM
   block:
     - name: Copy helm install script
