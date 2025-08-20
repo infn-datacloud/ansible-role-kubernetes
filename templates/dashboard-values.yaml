@@ -3,9 +3,9 @@ app:
     enabled: true
     hosts: 
     - "dashboard.{{ dns_name }}"
-    ingressClassName: nginx}}
+    ingressClassName: nginx
     issuer:
       name: {{ cluster_issuer_name }}
       scope: cluster
     tls:
-      secretName: dash-selfsigned
+      secretName: dash-secret
