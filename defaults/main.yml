@@ -16,7 +16,7 @@ nodelabel: ''
 # Software versions
 kube_install_helm: true
 helm_version: v3.17.4
-cert_manager_helm_version: v1.16.5
+cert_manager_helm_version: v1.18.2
 cert_manager_type: letsencrypt-prod # [self-signed, letsencrypt-staging, letsencrypt-prod]
 cert_manager_email: '' # used only for letsencrypt 
 dashboard_helm_version: 7.13.0
