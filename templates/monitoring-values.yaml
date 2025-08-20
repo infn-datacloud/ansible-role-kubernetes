@@ -5,12 +5,12 @@ grafana:
     ingressClassName: nginx
     annotations:
       cert-manager.io/cluster-issuer: {{ cluster_issuer_name }}
-  hosts:
-  - "grafana.{{ dns_name }}"
-  tls:
-  - hosts:
+    hosts:
     - "grafana.{{ dns_name }}"
-    secretName: grafana-secret
+    tls:
+    - hosts:
+      - "grafana.{{ dns_name }}"
+      secretName: grafana-secret
 
 prometheus:
   ingress:
