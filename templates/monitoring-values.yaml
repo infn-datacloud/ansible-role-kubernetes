@@ -1,7 +1,5 @@
 grafana:
   adminPassword: "{{ admin_token }}"
-  persistence:
-    enabled: true
   ingress:
     enabled: true
     ingressClassName: nginx
