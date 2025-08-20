@@ -11,9 +11,9 @@ metadata:
 spec:
   ingressClassName: nginx
   tls:
-  - secretName: kubernetes-api-cert
-    hosts:    
+  - hosts:    
     - "api-kubernetes.{{ dns_name }}"
+    secretName: kubernetes-api-cert
   rules:
   - host: "api-kubernetes.{{ dns_name }}"
     http:

@@ -1,10 +1,12 @@
 app:
   ingress:
     enabled: true
-    hosts: 
-    - "dashboard.{{ dns_name }}"
     ingressClassName: nginx
     annotations:
       cert-manager.io/cluster-issuer: {{ cluster_issuer_name }}
+    hosts: 
+    - "dashboard.{{ dns_name }}"
     tls:
+    - hosts:
+      - "dashboard.{{ dns_name }}"
       secretName: dash-selfsigned
