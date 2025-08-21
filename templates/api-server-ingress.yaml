@@ -6,19 +6,19 @@ metadata:
   labels:
     app: kubernetes
   annotations:
-    cert-manager.io/cluster-issuer: "{{ cluster_issuer_name }}"
+    cert-manager.io/cluster-issuer: {{ cluster_issuer_name }}
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
   ingressClassName: nginx
   tls:
   - hosts:    
-    - "api-kubernetes.{{ dns_name }}"
+    - api-kubernetes.{{ dns_name }}
     secretName: kubernetes-api-cert
   rules:
-  - host: "api-kubernetes.{{ dns_name }}"
+  - host: api-kubernetes.{{ dns_name }}
     http:
       paths:
-      - path: "/"
+      - path: /
         pathType: Prefix
         backend:
           service:
