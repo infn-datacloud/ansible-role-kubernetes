@@ -5,7 +5,7 @@ app:
     - "dashboard.{{ dns_name }}"
     ingressClassName: nginx
     issuer:
-      name: {{ cluster_issuer_name }}
+      name: "{{ cluster_issuer_name }}"
       scope: cluster
     tls:
       secretName: dash-secret
