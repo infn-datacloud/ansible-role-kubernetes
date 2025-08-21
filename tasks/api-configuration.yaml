@@ -22,7 +22,7 @@
   - ansible.builtin.copy:
       src: files/kubeconfig
       dest: /etc/kubeconfig
-  - ansible.builtin.command: kubectl -n kube-system get secret admin-token -o jsonpath='{.data.token}' | base64 -d
+  - ansible.builtin.shell: kubectl -n kube-system get secret admin-token -o jsonpath='{.data.token}' | base64 -d
     register: admin_token
     changed_when: false
   - ansible.builtin.command: kubectl config --kubeconfig=/etc/kubeconfig set-credentials admin --token={{ admin_token.stdout }}
