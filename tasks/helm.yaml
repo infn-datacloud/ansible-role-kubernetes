@@ -12,5 +12,7 @@
         dest: /tmp/helm.sh
         mode: '0755'
     - name: Execute helm install script
-      ansible.builtin.command: bash -c "chmod +x /tmp/helm.sh && DESIRED_VERSION={{ helm_version }} /tmp/helm.sh"
+      ansible.builtin.shell: | 
+        chmod +x /tmp/helm.sh
+        DESIRED_VERSION={{ helm_version }} /tmp/helm.sh
   when: not helm.stat.exists
