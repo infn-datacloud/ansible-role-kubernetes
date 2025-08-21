@@ -7,15 +7,15 @@ spec:
   selfSigned: {}
 {% else %}
 metadata:
-  name: "{{ cluster_issuer_name }}"
+  name: {{ cluster_issuer_name }}
 spec:
   acme:
-    server: "{{ acme_server_url }}"
-    email: "{{ acme_email }}"
+    server: {{ acme_server_url }}
+    email: {{ acme_email }}
     privateKeySecretRef:
       name: letsencrypt
     solvers:
     - http01:
         ingress:
           class: nginx
-{% endif %}  
+{% endif %}
