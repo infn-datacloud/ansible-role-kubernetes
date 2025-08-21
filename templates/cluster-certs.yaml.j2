@@ -7,19 +7,15 @@ spec:
   selfSigned: {}
 {% else %}
 metadata:
-  name: {{ cluster_issuer_name }}
+  name: "{{ cluster_issuer_name }}"
 spec:
   acme:
-    # The ACME server URL
-    server: {{ acme_server_url }}
-    # Email address used for ACME registration
-    email: {{ acme_email }}
-    # Name of a secret used to store the ACME account private key
+    server: "{{ acme_server_url }}"
+    email: "{{ cert_manager_email }}"
     privateKeySecretRef:
       name: letsencrypt
-    # Enable the HTTP-01 challenge provider
     solvers:
     - http01:
         ingress:
           class: nginx
-{% endif %}  
+{% endif %}

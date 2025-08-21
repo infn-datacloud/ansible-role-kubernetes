@@ -6,18 +6,22 @@ This ansible role customizes a [Kubernetes](https://kubernetes.io/) cluster.
 
 The variables that can be passed to this role and a brief description about them are as follows:
 
-    # Type of node front or wn
-    kube_type_of_node: front
-    # Flag to set HELM to be installed
-    kube_install_helm: true
-    # If true, running kubernetes etcd in ramdisk
-    etcd_in_RAM: true
-    # Deploy the Dashboard
-    kube_deploy_dashboard: true
-    # Flag to enable GPU support
-    enable_gpu: false
-    # Name (and version) of the Ansible role to include if `enable_gpu == true'
-    gpu_support_role: git+https://baltig.infn.it/infn-cloud/ansible-role-gpu-support,vX.Y.Z
+```text
+# Type of node front or wn
+kube_type_of_node: front
+# Flag to set HELM to be installed
+kube_install_helm: true
+# If true, running kubernetes etcd in ramdisk
+etcd_in_RAM: true
+# Deploy software
+kube_deploy_dashboard: true
+kube_deploy_monitoring: true
+kube_deploy_cert_manager: true
+# Flag to enable GPU support
+enable_gpu: false
+# Name (and version) of the Ansible role to include if `enable_gpu == true'
+gpu_support_role: git+https://baltig.infn.it/infn-cloud/ansible-role-gpu-support,vX.Y.Z
+```
 
 ## Dependencies
 
@@ -32,7 +36,7 @@ The cluster must be using containerd as the container runtime and etcd must be r
 
 ### Manual setup for an existing cluster
 
-First, download nerdctl from [here](https://github.com/containerd/nerdctl) and move the executable to `/usr/local/bin`. Then, copy the contents of the `files_etcdRAM` folder as follows:
+First, download [nerdctl](https://github.com/containerd/nerdctl) and move the executable to `/usr/local/bin`. Then, copy the contents of the `files_etcdRAM` folder as follows:
 
 ```text
 files_etcdRAM/usr/lib/systemd/system/kubelet.service.d ---> /usr/lib/systemd/system/kubelet.service.d

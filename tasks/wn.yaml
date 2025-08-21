@@ -7,7 +7,7 @@
     register: hostname
     changed_when: false
   - name: Set node Label
-    ansible.builtin.command: kubectl label node {{ IM_NODE_HOSTNAME }} {{ nodelabel }}
+    ansible.builtin.command: "kubectl label node {{ IM_NODE_HOSTNAME }} {{ nodelabel }}"
     environment:
       KUBECONFIG: "{{ kubeconfig_path }}"
     delegate_to: "{{ kube_front_end_ip }}"

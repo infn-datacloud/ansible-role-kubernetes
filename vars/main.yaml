@@ -1,4 +1,8 @@
 ---
-cluster_issuer_name: "{% if cert_manager_type == 'self-signed' %} selfsigned-issuer {% else %} {{ cert_manager_type }}-issuer {% endif %}"
-acme_server_url: "{% if cert_manager_type == 'letsencrypt-staging' %} https://acme-staging-v02.api.letsencrypt.org/directory {% elif cert_manager_type == 'letsencrypt-prod' %} https://acme-v02.api.letsencrypt.org/directory {% endif %}"
-acme_email: "{{ cert_manager_email }}"
+cluster_issuer_name: "{{ 'selfsigned-issuer' if cert_manager_type == 'self-signed' else cert_manager_type + '-issuer' }}"
+acme_server_url: >-
+  {{ 
+    'https://acme-staging-v02.api.letsencrypt.org/directory' 
+    if cert_manager_type == 'letsencrypt-staging' 
+    else 'https://acme-v02.api.letsencrypt.org/directory' 
+  }}

@@ -4,17 +4,19 @@
   environment:
     KUBECONFIG: "{{ kubeconfig_path }}"
   register: cert_manager_present
-
 - name: Install cert manager
-  when: ('cert-manager' not in cert_manager_present.stdout)
-  ansible.builtin.command: "{{ item }}"
-  environment:
-    KUBECONFIG: "{{ kubeconfig_path }}"
-  with_items:
-    - helm repo add jetstack https://charts.jetstack.io
-    - helm repo update
-    - "helm install cert-manager jetstack/cert-manager --atomic -n cert-manager --create-namespace --version {{ cert_manager_helm_version }} --set installCRDs=true"
- 
+  when: ('cert-manager' not in cert_manager_present.stdout) and kube_deploy_cert_manager
+  block:
+  - template:
+      src: templates/cert-manager-values.yaml.j2
+      dest: /etc/cert-manager-values.yaml
+  - ansible.builtin.command: "{{ item }}"
+    environment:
+      KUBECONFIG: "{{ kubeconfig_path }}"
+    with_items:
+      - "helm repo add jetstack https://charts.jetstack.io"
+      - "helm repo update"
+      - "helm install cert-manager jetstack/cert-manager --atomic -n cert-manager --create-namespace --version {{ cert_manager_helm_version }} --values /etc/cert-manager-values.yaml"
 - name: Wait Cert-Manager to start
   ansible.builtin.command: kubectl get deployment -n cert-manager -l 'app=webhook' -o 'jsonpath={.items[0].status.readyReplicas}'
   environment:
@@ -23,13 +25,12 @@
   until: (cert_manager_webhook_deployment_status.stdout | default(0) | int) >= 1
   retries: 30
   delay: 15
-
 - name: Define cluster issuer
   block:
   - template:
-      src: templates/cluster-certs.yaml
-      dest: /etc/cluster-certs.yml 
-  - ansible.builtin.command: kubectl apply -f /etc/cluster-certs.yml
+      src: templates/cluster-certs.yaml.j2
+      dest: /etc/cluster-certs.yaml
+  - ansible.builtin.command: kubectl apply -f /etc/cluster-certs.yaml
     environment:
       KUBECONFIG: "{{ kubeconfig_path }}"
 
@@ -38,92 +39,35 @@
   environment:
     KUBECONFIG: "{{ kubeconfig_path }}"
   register: dashboard_present
-
 - name: Install dashboard
   when: ('dashboard' not in dashboard_present.stdout) and kube_deploy_dashboard
   block:
   - template:
-      src: templates/dashboard-values.yaml
-      dest: /etc/dashboard-values.yml
+      src: templates/dashboard-values.yaml.j2
+      dest: /etc/dashboard-values.yaml
   - ansible.builtin.command: "{{ item }}"
     environment:
       KUBECONFIG: "{{ kubeconfig_path }}"
     with_items:
-      - helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
-      - helm repo update
-      - "helm install dashboard kubernetes-dashboard/kubernetes-dashboard --atomic -n kube-system --version {{ dashboard_helm_version }} --values /etc/dashboard-values.yml"
-  
-- name: Check if prometheus is already installed
-  ansible.builtin.shell: "helm list -a -n prometheus"
+      - "helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/"
+      - "helm repo update"
+      - "helm install dashboard kubernetes-dashboard/kubernetes-dashboard --atomic -n kube-system --version {{ dashboard_helm_version }} --values /etc/dashboard-values.yaml"
+
+- name: Check if monitoring is already installed
+  ansible.builtin.shell: "helm list -a -n monitoring"
   environment:
     KUBECONFIG: "{{ kubeconfig_path }}"
-  register: prometheus_present
-
-- name: Install prometheus
-  when: ('prometheus' not in prometheus_present.stdout)
+  register: monitoring_present
+- name: Install monitoring
+  when: ('monitoring' not in monitoring_present.stdout) and kube_deploy_monitoring
   block:
   - template:
-      src: templates/prometheus-values.yaml
-      dest: /etc/prometheus-values.yml
+      src: templates/monitoring-values.yaml.j2
+      dest: /etc/monitoring-values.yaml
   - ansible.builtin.command: "{{ item }}"
     environment:
       KUBECONFIG: "{{ kubeconfig_path }}"
     with_items:
-      - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-      - helm repo update
-      - "helm install prometheus prometheus/prometheus --atomic -n prometheus --create-namespace --version {{ prometheus_helm_version }} --values /etc/prometheus-values.yml"
-
-- name: Check if kube-eagle is already installed
-  ansible.builtin.shell: "helm list -a -n kube-eagle"
-  environment:
-    KUBECONFIG: "{{ kubeconfig_path }}"
-  register: kube_eagle_present
-
-- name: Install kube-eagle
-  when: ('kube-eagle' not in kube_eagle_present.stdout)
-  ansible.builtin.command: "{{ item }}"
-  environment:
-    KUBECONFIG: "{{ kubeconfig_path }}"
-  with_items:
-    - helm repo add kube-eagle https://raw.githubusercontent.com/cloudworkz/kube-eagle-helm-chart/master
-    - helm repo update
-    - "helm install kube-eagle kube-eagle/kube-eagle --atomic -n kube-eagle --create-namespace --version {{ kube_eagle_helm_version }}"
-
-- name: Check if grafana is already installed
-  ansible.builtin.shell: "helm list -a -n grafana"
-  environment:
-    KUBECONFIG: "{{ kubeconfig_path }}"
-  register: grafana_present
-
-- name: Install grafana
-  when: ('grafana' not in grafana_present.stdout)
-  block:
-    - name: Copy templates/grafana-secret.yaml
-      ansible.builtin.template:
-        src: templates/grafana-secret.yaml
-        dest: /etc/grafana-secret.yml
-        mode: '0644'
-    - name: Copy templates/grafana-values.yaml
-      ansible.builtin.template:
-        src: templates/grafana-values.yaml
-        dest: /etc/grafana-values.yml
-        mode: '0644'
-    - name: Create grafana namespace
-      ansible.builtin.command: kubectl create ns grafana
-      environment:
-        KUBECONFIG: "{{ kubeconfig_path }}"
-    - name: Create grafana secret
-      ansible.builtin.command: kubectl apply -n grafana -f /etc/grafana-secret.yml
-      register: kubectl_grafana_secret_apply
-      environment:
-        KUBECONFIG: "{{ kubeconfig_path }}"
-      changed_when:
-        - kubectl_grafana_secret_apply.rc == 0
-    - name: Install grafana
-      ansible.builtin.command: "{{ item }}"
-      environment:
-        KUBECONFIG: "{{ kubeconfig_path }}"
-      with_items:
-        - helm repo add grafana https://grafana.github.io/helm-charts
-        - helm repo update
-        - "helm install grafana grafana/grafana --atomic -n grafana --version {{ grafana_helm_version }} --values /etc/grafana-values.yml"
+      - "helm repo add prometheus-community https://prometheus-community.github.io/helm-charts"
+      - "helm repo update"
+      - "helm install mon prometheus-community/kube-prometheus-stack --atomic -n monitoring --create-namespace --version {{ monitoring_helm_version }} --values /etc/monitoring-values.yaml"

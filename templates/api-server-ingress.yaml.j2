@@ -1,24 +1,24 @@
-kind: Ingress
 apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: kubernetes-api
   namespace: default 
   labels:
     app: kubernetes
   annotations:
-    cert-manager.io/cluster-issuer: {{ cluster_issuer_name }}
+    cert-manager.io/cluster-issuer: "{{ cluster_issuer_name }}"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
   ingressClassName: nginx
   tls:
-  - secretName: kubernetes-api-cert
-    hosts:    
+  - hosts:    
     - "api-kubernetes.{{ dns_name }}"
+    secretName: kubernetes-api-cert
   rules:
   - host: "api-kubernetes.{{ dns_name }}"
     http:
       paths:
-      - path: "/"
+      - path: /
         pathType: Prefix
         backend:
           service:
