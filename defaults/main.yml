@@ -15,12 +15,12 @@ nodelabel: ''
 
 # Software versions
 kube_install_helm: true
-helm_version: v3.17.4
+helm_version: v3.18.6
 cert_manager_helm_version: v1.18.2
 cert_manager_type: letsencrypt-prod # [self-signed, letsencrypt-staging, letsencrypt-prod]
 cert_manager_email: '' # used only for letsencrypt 
 dashboard_helm_version: 7.13.0
-monitoring_helm_version: 75.18.1
+monitoring_helm_version: 76.4.0
 nerdctl_version: 2.1.3
 
 # If true, running kubernetes etcd in ramdisk
