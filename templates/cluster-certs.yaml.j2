@@ -11,7 +11,7 @@ metadata:
 spec:
   acme:
     server: {{ acme_server_url }}
-    email: {{ acme_email }}
+    email: {{ cert_manager_email }}
     privateKeySecretRef:
       name: letsencrypt
     solvers:
