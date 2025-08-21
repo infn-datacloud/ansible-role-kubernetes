@@ -8,15 +8,15 @@
   when: ('cert-manager' not in cert_manager_present.stdout) and kube_deploy_cert_manager
   block:
   - template:
-      src: templates/cert-manager-values.yaml
-      dest: /etc/cert-manager-values.yml
+      src: templates/cert-manager-values.yaml.j2
+      dest: /etc/cert-manager-values.yaml
   - ansible.builtin.command: "{{ item }}"
     environment:
       KUBECONFIG: "{{ kubeconfig_path }}"
     with_items:
       - "helm repo add jetstack https://charts.jetstack.io"
       - "helm repo update"
-      - "helm install cert-manager jetstack/cert-manager --atomic -n cert-manager --create-namespace --version {{ cert_manager_helm_version }} --values /etc/cert-manager-values.yml"
+      - "helm install cert-manager jetstack/cert-manager --atomic -n cert-manager --create-namespace --version {{ cert_manager_helm_version }} --values /etc/cert-manager-values.yaml"
 - name: Wait Cert-Manager to start
   ansible.builtin.command: kubectl get deployment -n cert-manager -l 'app=webhook' -o 'jsonpath={.items[0].status.readyReplicas}'
   environment:
@@ -28,9 +28,9 @@
 - name: Define cluster issuer
   block:
   - template:
-      src: templates/cluster-certs.yaml
-      dest: /etc/cluster-certs.yml 
-  - ansible.builtin.command: kubectl apply -f /etc/cluster-certs.yml
+      src: templates/cluster-certs.yaml.j2
+      dest: /etc/cluster-certs.yaml
+  - ansible.builtin.command: kubectl apply -f /etc/cluster-certs.yaml
     environment:
       KUBECONFIG: "{{ kubeconfig_path }}"
 
@@ -43,15 +43,15 @@
   when: ('dashboard' not in dashboard_present.stdout) and kube_deploy_dashboard
   block:
   - template:
-      src: templates/dashboard-values.yaml
-      dest: /etc/dashboard-values.yml
+      src: templates/dashboard-values.yaml.j2
+      dest: /etc/dashboard-values.yaml
   - ansible.builtin.command: "{{ item }}"
     environment:
       KUBECONFIG: "{{ kubeconfig_path }}"
     with_items:
       - "helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/"
       - "helm repo update"
-      - "helm install dashboard kubernetes-dashboard/kubernetes-dashboard --atomic -n kube-system --version {{ dashboard_helm_version }} --values /etc/dashboard-values.yml"
+      - "helm install dashboard kubernetes-dashboard/kubernetes-dashboard --atomic -n kube-system --version {{ dashboard_helm_version }} --values /etc/dashboard-values.yaml"
 
 - name: Check if monitoring is already installed
   ansible.builtin.shell: "helm list -a -n monitoring"
@@ -62,12 +62,12 @@
   when: ('monitoring' not in monitoring_present.stdout) and kube_deploy_monitoring
   block:
   - template:
-      src: templates/monitoring-values.yaml
-      dest: /etc/monitoring-values.yml
+      src: templates/monitoring-values.yaml.j2
+      dest: /etc/monitoring-values.yaml
   - ansible.builtin.command: "{{ item }}"
     environment:
       KUBECONFIG: "{{ kubeconfig_path }}"
     with_items:
       - "helm repo add prometheus-community https://prometheus-community.github.io/helm-charts"
       - "helm repo update"
-      - "helm install mon prometheus-community/kube-prometheus-stack --atomic -n monitoring --create-namespace --version {{ monitoring_helm_version }} --values /etc/monitoring-values.yml"
+      - "helm install mon prometheus-community/kube-prometheus-stack --atomic -n monitoring --create-namespace --version {{ monitoring_helm_version }} --values /etc/monitoring-values.yaml"

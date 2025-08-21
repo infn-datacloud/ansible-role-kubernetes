@@ -2,7 +2,7 @@
 - name: Expose apiserver through ingress
   block:
   - template:
-      src: templates/api-server-ingress.yaml
+      src: templates/api-server-ingress.yaml.j2
       dest: /etc/api-server-ingress.yaml
   - ansible.builtin.command: kubectl apply -f /etc/api-server-ingress.yaml
     environment:
