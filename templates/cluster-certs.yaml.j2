@@ -7,11 +7,11 @@ spec:
   selfSigned: {}
 {% else %}
 metadata:
-  name: {{ cluster_issuer_name }}
+  name: "{{ cluster_issuer_name }}"
 spec:
   acme:
-    server: {{ acme_server_url }}
-    email: {{ cert_manager_email }}
+    server: "{{ acme_server_url }}"
+    email: "{{ cert_manager_email }}"
     privateKeySecretRef:
       name: letsencrypt
     solvers:

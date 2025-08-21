@@ -1,15 +1,15 @@
 grafana:
-  adminPassword: {{ admin_token }}
+  adminPassword: "{{ admin_token }}"
   ingress:
     enabled: true
     ingressClassName: nginx
     annotations:
-      cert-manager.io/cluster-issuer: {{ cluster_issuer_name }}
+      cert-manager.io/cluster-issuer: "{{ cluster_issuer_name }}"
     hosts:
-    - grafana.{{ dns_name }}
+    - "grafana.{{ dns_name }}"
     tls:
     - hosts:
-      - grafana.{{ dns_name }}
+      - "grafana.{{ dns_name }}"
       secretName: grafana-secret
 
 prometheus:
