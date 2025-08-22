@@ -21,12 +21,12 @@
 - name: Copy files for etcdRAM
   block:
   - name: Copy scripts
-    copy:
+    ansible.builtin.copy:
       src: files/files_etcdRAM/opt/etcdRAM/bin/
       dest: /opt/etcdRAM/bin/
       mode: '0755'
   - name: Copy kubelet configuration
-    copy:
+    ansible.builtin.copy:
       src: files/files_etcdRAM/usr/lib/systemd/system/kubelet.service.d/
       dest: /usr/lib/systemd/system/kubelet.service.d/
       mode: '0644'

@@ -10,22 +10,27 @@
 
 - name: Create service account for remote access
   block:
-  - copy:
-      src: files/kubeconfig
-      dest: /etc/kubeconfig
-  - copy:
+  - ansible.builtin.copy:
       src: files/admin-cred.yaml
       dest: /etc/admin-cred.yml
-  - shell: |
-      kubectl apply -f /etc/admin-cred.yml
-      kubectl create --dry-run=client clusterrolebinding add-on-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:admin -o yaml | kubectl apply -f -
-      export TOKEN=$(kubectl -n kube-system get secret admin-token -o jsonpath='{.data.token}' | base64 -d)
-      kubectl config --kubeconfig=/etc/kubeconfig set-credentials admin --token=$TOKEN
-      kubectl config --kubeconfig=/etc/kubeconfig set-cluster public --server=https://api-kubernetes.{{ dns_name }} --insecure-skip-tls-verify
-      kubectl config --kubeconfig=/etc/kubeconfig set-context public --cluster=public --namespace=default --user=admin
-      kubectl config --kubeconfig=/etc/kubeconfig use-context public
+  - ansible.builtin.command: kubectl apply -f /etc/admin-cred.yml
     environment:
       KUBECONFIG: "{{ kubeconfig_path }}"
+
+- name: Configure kubeconfig
+  block:
+  - ansible.builtin.copy:
+      src: files/kubeconfig
+      dest: /etc/kubeconfig
+  - ansible.builtin.shell: kubectl -n kube-system get secret admin-token -o jsonpath='{.data.token}' | base64 -d
+    register: admin_token
+    changed_when: false
+  - ansible.builtin.command: kubectl config --kubeconfig=/etc/kubeconfig set-credentials admin --token={{ admin_token.stdout }}
+  - ansible.builtin.command: kubectl config --kubeconfig=/etc/kubeconfig set-cluster public --server=https://api-kubernetes.{{ dns_name }} --insecure-skip-tls-verify
+  - ansible.builtin.command: kubectl config --kubeconfig=/etc/kubeconfig set-context public --cluster=public --namespace=default --user=admin
+  - ansible.builtin.command: kubectl config --kubeconfig=/etc/kubeconfig use-context public
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
 
 - name: Register kubeconfig
   shell: kubectl config --kubeconfig=/etc/kubeconfig view --raw
