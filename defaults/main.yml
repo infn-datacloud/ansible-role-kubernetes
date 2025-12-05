@@ -28,4 +28,6 @@ etcd_in_RAM: true
 
 # Properties related to GPU support
 enable_gpu: false
-gpu_support_role: git+https://baltig.infn.it/infn-cloud/ansible-role-gpu-support,v1.2.4
+gpu_support_role_name: ansible-role-gpu-support
+gpu_support_role: "git+https://baltig.infn.it/infn-cloud/{{ gpu_support_role_name }},v1.2.5"
+gpu_support_role_enable_install: false

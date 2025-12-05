@@ -1,25 +1,53 @@
 ---
-- name: Set ansible-role-gpu-support role name fact
-  ansible.builtin.set_fact:
-    gpu_support_role_name: "{{ (gpu_support_role.split(',') | first).split('/') | last }}"
 
-- name: Print ansible-role-gpu-support role facts
-  ansible.builtin.debug:
-    msg: >
-      gpu_support_role: '{{ gpu_support_role }}', gpu_support_role_name: '{{ gpu_support_role_name }}'
+- name: Install role ansible-role-gpu-support from url
+  when: gpu_support_role_enable_install | default(false)
+  block:
+    - name: Extract ansible-role-gpu-support role name from url
+      ansible.builtin.set_fact:
+        gpu_support_role_name: "{{ (gpu_support_role.split(',') | first).split('/') | last }}"
 
-- name: Install ansible-role-gpu-support on Control node
-  delegate_to: 127.0.0.1
-  ansible.builtin.command: ansible-galaxy install -f -i -c {{ gpu_support_role }}
-  register: gpu_support_role_install
-  changed_when: >
-    gpu_support_role_install.rc == 0 and
-    ('is already installed, skipping' not in gpu_support_role_install.stdout)
+    - name: Log ansible-role-gpu-support role facts
+      ansible.builtin.debug:
+        msg: >
+          gpu_support_role: '{{ gpu_support_role }}', gpu_support_role_name: '{{ gpu_support_role_name }}'
+
+    - name: Ensure ansible-galaxy is installed on Control node
+      block:
+        - name: Check if ansible-galaxy is installed on Control node
+          delegate_to: 127.0.0.1
+          ansible.builtin.command: which ansible-galaxy
+          register: ansible_galaxy_check
+          changed_when: false
+          failed_when: false
+
+        - name: Install ansible package on Control node if missing
+          delegate_to: 127.0.0.1
+          ansible.builtin.apt:
+            name: ansible
+            state: present
+            update_cache: yes
+          become: true
+          when: ansible_galaxy_check.rc != 0
+
+    - name: Install ansible-role-gpu-support on Control node
+      delegate_to: 127.0.0.1
+      ansible.builtin.command: ansible-galaxy install -f -i -c {{ gpu_support_role }}
+      register: gpu_support_role_install
+      changed_when: >
+        gpu_support_role_install.rc == 0 and
+        ('is already installed, skipping' not in gpu_support_role_install.stdout)
 
 - name: Include ansible-role-gpu-support
-  ansible.builtin.include_role:
-    # name: ansible-role-gpu-support
-    name: "{{ gpu_support_role_name }}"
-  vars:
-    node_type: "{{ (kube_type_of_node == 'wn') | ternary('worker', 'master') }}"
-    node_cluster_type: "kubernetes"
+  block:
+    - name: Rename kubeconfig_path variable to avoid recursion overflow
+      ansible.builtin.set_fact:
+        _kubeconfig_path: "{{ kubeconfig_path }}"
+    - name: Include ansible-role-gpu-support
+      ansible.builtin.include_role:
+        # name: ansible-role-gpu-support
+        name: "{{ gpu_support_role_name }}"
+      vars:
+        node_type: "{{ (kube_type_of_node == 'wn') | ternary('worker', 'master') }}"
+        node_cluster_type: "kubernetes"
+        kubeconfig_path: "{{ _kubeconfig_path }}"
