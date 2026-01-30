@@ -49,9 +49,9 @@
     environment:
       KUBECONFIG: "{{ kubeconfig_path }}"
     with_items:
-      - "helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/"
+      - "helm repo add headlamp https://kubernetes-sigs.github.io/headlamp/"
       - "helm repo update"
-      - "helm install dashboard kubernetes-dashboard/kubernetes-dashboard --atomic -n kube-system --version {{ dashboard_helm_version }} --values /etc/dashboard-values.yaml"
+      - "helm install dashboard headlamp/headlamp --atomic -n kube-system --version {{ dashboard_helm_version }} --values /etc/dashboard-values.yaml"
 
 - name: Check if monitoring is already installed
   ansible.builtin.shell: "helm list -a -n monitoring"

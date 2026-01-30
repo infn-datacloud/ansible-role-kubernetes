@@ -19,7 +19,7 @@ helm_version: v3.18.6
 cert_manager_helm_version: v1.18.2
 cert_manager_type: letsencrypt-prod # [self-signed, letsencrypt-staging, letsencrypt-prod]
 cert_manager_email: '' # used only for letsencrypt 
-dashboard_helm_version: 7.13.0
+dashboard_helm_version: 0.39.0
 monitoring_helm_version: 76.4.0
 nerdctl_version: 2.1.3
 
