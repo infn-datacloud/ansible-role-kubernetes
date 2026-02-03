@@ -1,11 +1,14 @@
-app:
-  ingress:
-    enabled: true
-    hosts: 
-    - "dashboard.{{ dns_name }}"
-    ingressClassName: nginx
-    issuer:
-      name: "{{ cluster_issuer_name }}"
-      scope: cluster
-    tls:
-      secretName: dash-secret
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: "{{ cluster_issuer_name }}"
+  ingressClassName: nginx
+  hosts:
+    - host: "dashboard.{{ dns_name }}"
+      paths:
+      - path: /
+        type: ImplementationSpecific
+  tls:
+   - secretName: dash-secret
+     hosts:
+       - "dashboard.{{ dns_name }}"
